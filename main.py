@@ -10,6 +10,14 @@ from torchvision import transforms
 from torchvision.datasets import CIFAR10, CIFAR100, MNIST
 from torchvision.models import resnet50
 
+def main():
+    model = CIFARModel()
+    trainer = pl.Trainer(
+            gpus=2,
+            num_nodes=2,
+            accelerator='ddp'
+        )  
+    trainer.fit(model)  
 
 class CIFARModel(pl.LightningModule):
 
@@ -60,7 +68,8 @@ class CIFARModel(pl.LightningModule):
 
 # train_loader = DataLoader(CIFAR10(os.getcwd(), train=True, download=True, transform=transforms.ToTensor()), batch_size=32)
 
-model = CIFARModel()
-trainer = pl.Trainer(progress_bar_refresh_rate=20)    
-trainer.fit(model)  
+
+
+if __name__ == "__main__":
+    main()
 
