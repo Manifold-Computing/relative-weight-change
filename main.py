@@ -8,13 +8,14 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, CIFAR100, MNIST
-from torchvision.models import resnet50
+from torchvision.models import resnet50]
+import argparse
 
-def main():
+def main(args):
     model = CIFARModel()
     trainer = pl.Trainer(
-            gpus=2,
-            num_nodes=2,
+            gpus=args.gpus,
+            num_nodes=args.nodes,
             accelerator='ddp'
         )  
     trainer.fit(model)  
@@ -31,16 +32,16 @@ class CIFARModel(pl.LightningModule):
     def forward(self, x):
         return self.model(x)
 
-    def prepare_data(self):
-        if self.data == 'CIFAR10':
-            self.train_data = CIFAR10("./", train=True, download=True)
-            self.val_data = CIFAR10("./", train=False, download=True)
-        elif self.data == 'CIFAR100':
-            self.train_data = CIFAR100("./", train=True, download=True)
-            self.val_data = CIFAR100("./", train=False, download=True)
-        elif self.data == 'MNIST':
-            self.train_data = MNIST("./", train=True, download=True)
-            self.val_data = MNIST("./", train=False, download=True)
+    # def prepare_data(self):
+    #     if self.data == 'CIFAR10':
+    #         self.train_data = CIFAR10("./", train=True, download=True)
+    #         self.val_data = CIFAR10("./", train=False, download=True)
+    #     elif self.data == 'CIFAR100':
+    #         self.train_data = CIFAR100("./", train=True, download=True)
+    #         self.val_data = CIFAR100("./", train=False, download=True)
+    #     elif self.data == 'MNIST':
+    #         self.train_data = MNIST("./", train=True, download=True)
+    #         self.val_data = MNIST("./", train=False, download=True)
          
 
     def training_step(self, batch, batch_nb):
@@ -61,15 +62,26 @@ class CIFARModel(pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=0.02)
 
     def train_dataloader(self):
-        return Dataloader(self.train_data, batch_size=self.batch_size)
+        dataset = CIFAR10("./", train=True, download=True)
+        dist_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        return Dataloader(dataset, batch_size=self.batch_size, sampler=dist_sampler)
     
     def val_dataloader(self):
-        return Dataloader(self.val_data, batch_size=self.batch_size)
+        dataset = CIFAR10("./", train=False, download=True)
+        dist_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        return Dataloader(dataset, batch_size=self.batch_size, sampler=dist_sampler)
 
 # train_loader = DataLoader(CIFAR10(os.getcwd(), train=True, download=True, transform=transforms.ToTensor()), batch_size=32)
 
 
 
 if __name__ == "__main__":
-    main()
+
+    parser = argparse.ArgumentParser(description="Parser for RWC")
+
+    gpus = parser.add_argument('--gpus', type=int, default=1, help="Number of GPUs per node")
+    nodes = parser.add_argument('--nodes', type=int, default=1, help="Number of nodes to use for the job")
+
+    args = parser.parse_args()
+    main(args)
 
