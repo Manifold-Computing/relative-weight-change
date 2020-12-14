@@ -43,6 +43,14 @@ class CIFARModel(pl.LightningModule):
         acc = accuracy(logits, y)
         pbar = {'val_accuracy': acc}
         return {'val_loss': loss, 'progress_bar': pbar}
+    
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=0.02)
+
+    def train_dataloader(self):
+        dataset = CIFAR10("./", train=True, download=True)
+        dist_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        return Dataloader(dataset, batch_size=self.batch_size, sampler=dist_sampler)
             
     def val_dataloader(self):
         dataset = CIFAR10("./", train=False, download=True)
