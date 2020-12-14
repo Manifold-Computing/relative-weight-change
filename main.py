@@ -2,16 +2,9 @@ import argparse
 import os
 
 import pytorch_lightning as pl
-import torch
-import torchvision.transforms as transforms
-from pytorch_lightning.metrics.functional import accuracy
-from torch import nn
-from torch.nn import functional as F
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision.datasets import CIFAR10, CIFAR100, MNIST
-from torchvision.models import resnet50
+
 from model import CIFARModel
+
 
 def main(args):
     print(f"Nodes: {args.nodes} \tGPUs: {args.gpus}")

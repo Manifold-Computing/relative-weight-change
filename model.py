@@ -1,3 +1,15 @@
+import pytorch_lightning as pl
+import torch
+import torchvision.transforms as transforms
+from pytorch_lightning.metrics.functional import accuracy
+from torch import nn
+from torch.nn import functional as F
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torchvision.datasets import CIFAR10, CIFAR100, MNIST
+from torchvision.models import resnet50
+
+
 class CIFARModel(pl.LightningModule):
 
     def __init__(self, out_channels=10, data='CIFAR10', batch_size=32):
@@ -31,8 +43,6 @@ class CIFARModel(pl.LightningModule):
         acc = accuracy(logits, y)
         pbar = {'val_accuracy': acc}
         return {'val_loss': loss, 'progress_bar': pbar}
-
-    
             
     def val_dataloader(self):
         dataset = CIFAR10("./", train=False, download=True)
