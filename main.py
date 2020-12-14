@@ -2,6 +2,7 @@ import argparse
 import os
 
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import EarlyStopping
 
 from model import CIFARModel
 
@@ -37,4 +38,3 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
-
