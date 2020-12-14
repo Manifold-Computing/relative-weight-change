@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, CIFAR100, MNIST
 from torchvision.models import resnet50
-
+from model import CIFARModel
 
 def main(args):
     print(f"Nodes: {args.nodes} \tGPUs: {args.gpus}")
@@ -27,7 +27,7 @@ def main(args):
             gpus=args.gpus,
             num_nodes=args.nodes,
             distributed_backend='ddp',
-            fast_dev_run=args.test_run
+            fast_dev_run=args.test_run,
             callbacks=[early_stop_callback])
     
     trainer.fit(model)
