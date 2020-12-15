@@ -19,8 +19,7 @@ def main(args):
                             mode='max')
     trainer = pl.Trainer(
             gpus=args.gpus,
-            num_nodes=args.nodes,
-            distributed_backend='ddp',
+            distributed_backend='dp',
             fast_dev_run=args.test_run,
             callbacks=[early_stop_callback])
     

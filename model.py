@@ -49,10 +49,8 @@ class CIFARModel(pl.LightningModule):
 
     def train_dataloader(self):
         dataset = CIFAR10("./", train=True, download=True)
-        dist_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
-        return Dataloader(dataset, batch_size=self.batch_size, sampler=dist_sampler)
+        return DataLoader(dataset, batch_size=self.batch_size)
             
     def val_dataloader(self):
         dataset = CIFAR10("./", train=False, download=True)
-        dist_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
-        return Dataloader(dataset, batch_size=self.batch_size, sampler=dist_sampler)
+        return DataLoader(dataset, batch_size=self.batch_size)
