@@ -27,7 +27,9 @@ class CIFARModel(pl.LightningModule):
         logits = self(x)
         loss = F.cross_entropy(logits, y)
         acc = accuracy(logits, y)
-        pbar =   {'Train_accuracy': acc}
+        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_accuracy', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        # pbar =   {'Train_accuracy': acc}
         return {'loss': loss, 'progress_bar': pbar}
 
     def training_step_end(self, batch_part_outputs):
@@ -41,7 +43,10 @@ class CIFARModel(pl.LightningModule):
         logits = self(x)
         loss = F.cross_entropy(logits, y)
         acc = accuracy(logits, y)
-        pbar = {'val_accuracy': acc}
+
+        self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_accurcay', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        # pbar = {'val_accuracy': acc}
         return {'val_loss': loss, 'progress_bar': pbar}
     
     def configure_optimizers(self):
