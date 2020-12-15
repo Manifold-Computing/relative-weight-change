@@ -48,9 +48,21 @@ class CIFARModel(pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=0.02)
 
     def train_dataloader(self):
-        dataset = CIFAR10("./", train=True, download=True)
+        train_transforms = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                             std=[0.229, 0.224, 0.225]),
+        ])
+        dataset = CIFAR10("./", train=True, download=True, transform=train_transforms)
         return DataLoader(dataset, batch_size=self.batch_size)
             
     def val_dataloader(self):
-        dataset = CIFAR10("./", train=False, download=True)
+        test_transforms = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                             std=[0.229, 0.224, 0.225]),
+        ]) 
+        dataset = CIFAR10("./", train=False, download=True, transform=test_transforms)
         return DataLoader(dataset, batch_size=self.batch_size)
