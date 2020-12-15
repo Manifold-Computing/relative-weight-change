@@ -27,16 +27,17 @@ class CIFARModel(pl.LightningModule):
         logits = self(x)
         loss = F.cross_entropy(logits, y)
         acc = accuracy(logits, y)
-        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('train_accuracy', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss', loss,  on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_accuracy', acc,  on_epoch=True, prog_bar=True, logger=True)
         # pbar =   {'Train_accuracy': acc}
-        return {'loss': loss}
 
     def training_step_end(self, batch_part_outputs):
-        print("Training step done! Entering the end function")
+        # print("Training step done! Entering the end function")
+        pass
 
     def validation_step_end(self, batch_part_outputs):
-        print("validation step done! Entering the val end function")
+        # print("validation step done! Entering the val end function")
+        pass
 
     def validation_step(self, batch, batch_nb):
         x, y = batch
@@ -45,9 +46,7 @@ class CIFARModel(pl.LightningModule):
         acc = accuracy(logits, y)
 
         self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val_accurcay', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        pbar = {'val_loss': loss}
-        return {'progress_bar': pbar}
+        self.log('val_accuracy', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
     
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=0.02)
