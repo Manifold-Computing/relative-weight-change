@@ -2,7 +2,11 @@ import numpy as np
 
 
 class RWC:
-    def calc_relative_weight_change(prev_list, curr_list):
+
+    def __init__(self):
+        pass
+
+    def calc_relative_weight_change(self, prev_list, curr_list):
         """Function computes the relative weight change (L1 Norm) between two lists
         Args:
             prev_list (list): NumPy list
@@ -33,7 +37,7 @@ class RWC:
         """
 
         # load model layers.
-        weights, layer_names = load_layers(model)
+        weights, layer_names = self.load_layers(model)
 
         # setup tracking dictionaries
         layers_dict = {}
@@ -61,7 +65,7 @@ class RWC:
         for i, layer in zip(range(len(prev_model_weights)), layer_names):
 
             # compute RL1.
-            layer_rwc_delta = calc_relative_weight_change(
+            layer_rwc_delta = self.calc_relative_weight_change(
                 prev_model_weights[i], curr_list[i])
 
             # update dictionaries.
@@ -73,7 +77,7 @@ class RWC:
         return rwc_deltas, prev_list
 
 
-    def load_layers(model):
+    def load_layers(self, model):
         layer_names, param_list = [], []
 
         for name, param in model.named_parameters():
