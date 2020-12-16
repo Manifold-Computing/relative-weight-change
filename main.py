@@ -1,26 +1,33 @@
 import argparse
 import os
+from types import SimpleNamespace
 
-import pytorch_lightning as pl
+from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
+from pytorch_lightning.trainer import seed_everything
 
+from logger import lightningLogger
 from model import CIFARModel
 
 
-def main(args):
-    print(f"Nodes: {args.nodes} \tGPUs: {args.gpus}")
+def main(args, configs):
+
+    seed_everything(42)
+
     model = CIFARModel()
 
     early_stop_callback = EarlyStopping(
-                            monitor='val_accuracy',
+                            monitor='val_accuracy_epoch',
                             min_delta=0.00,
                             patience=5,
                             verbose=False,
                             mode='max')
-    trainer = pl.Trainer(
+    trainer = Trainer(
+            deterministic=True,
             gpus=args.gpus,
             distributed_backend='dp',
             fast_dev_run=args.test_run,
+            logger=lightningLogger(args.experimentName),
             callbacks=[early_stop_callback])
     
     trainer.fit(model)
@@ -32,8 +39,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Parser for RWC")
 
     test_run = parser.add_argument('--test_run', action='store_true')
-    gpus = parser.add_argument('--gpus', type=int, default=1, help="Number of GPUs per node")
-    nodes = parser.add_argument('--nodes', type=int, default=1, help="Number of nodes to use for the job")
 
     args = parser.parse_args()
-    main(args)
+
+    # load configs
+    configs = SimpleNamespace(**json.load('./configs.json'))
+
+    main(args, configs)

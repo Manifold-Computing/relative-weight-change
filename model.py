@@ -9,6 +9,8 @@ from torchvision import transforms
 from torchvision.datasets import CIFAR10, CIFAR100, MNIST
 from torchvision.models import resnet50
 
+from rwc import RWC
+
 
 class CIFARModel(pl.LightningModule):
 
@@ -18,6 +20,8 @@ class CIFARModel(pl.LightningModule):
         self.model.fc = nn.Linear(2048, out_channels)
         self.data = data
         self.batch_size = batch_size
+        self.rwc = RWC()
+        self.prev_weights, self.rwc_delta_dict = self.rwc.setup_delta_tracking(self)
 
     def forward(self, x):
         return self.model(x)
@@ -29,15 +33,22 @@ class CIFARModel(pl.LightningModule):
         acc = accuracy(logits, y)
         self.log('train_loss', loss,  on_epoch=True, prog_bar=True, logger=True)
         self.log('train_accuracy', acc,  on_epoch=True, prog_bar=True, logger=True)
+
+        return {'loss': loss}
         # pbar =   {'Train_accuracy': acc}
 
     def training_step_end(self, batch_part_outputs):
         # print("Training step done! Entering the end function")
-        pass
+        self.rwc_delta_dict, self.prev_weights = self.rwc.compute_delta(self.prev_weights, self.rwc_delta_dict)
 
-    def validation_step_end(self, batch_part_outputs):
-        # print("validation step done! Entering the val end function")
-        pass
+        return {'loss': loss}
+
+    def on_train_end(self, trainer, pl_module):
+        for layer, values in self.rwc_delta_dict.items():
+            count = 0
+            for value in values:
+                count += 1
+                self.logger.experiment.log_metrics(layer, value, epoch=count)
 
     def validation_step(self, batch, batch_nb):
         x, y = batch
@@ -47,6 +58,8 @@ class CIFARModel(pl.LightningModule):
 
         self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log('val_accuracy', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+
+        return loss
     
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=0.02)
