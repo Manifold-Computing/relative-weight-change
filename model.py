@@ -43,7 +43,8 @@ class CIFARModel(pl.LightningModule):
         
         for layer, value in rwc_curr_dict.items():
             self.logger.experiment.log_metrics(layer, value, epoch=self.current_epoch)
-
+        print(f'\n\n\n {rwc_curr_dict} \n\n')
+        print(f'Training Step Outputs: {training_step_outputs}')
         return {'loss': loss}
 
     # def on_train_end(self, trainer, pl_module):
@@ -76,7 +77,7 @@ class CIFARModel(pl.LightningModule):
                              std=[0.229, 0.224, 0.225]),
         ])
         dataset = CIFAR10("./", train=True, download=True, transform=train_transforms)
-        return DataLoader(dataset, batch_size=self.batch_size)
+        return DataLoader(dataset, batch_size=self.batch_size, num_workers=40)
             
     def val_dataloader(self):
         test_transforms = transforms.Compose([
@@ -85,4 +86,4 @@ class CIFARModel(pl.LightningModule):
                              std=[0.229, 0.224, 0.225]),
         ]) 
         dataset = CIFAR10("./", train=False, download=True, transform=test_transforms)
-        return DataLoader(dataset, batch_size=self.batch_size)
+        return DataLoader(dataset, batch_size=self.batch_size, num_workers=40)
