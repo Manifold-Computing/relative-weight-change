@@ -61,6 +61,8 @@ class RWC:
         # load model layers.
         curr_list, layer_names = load_layers(model)
 
+        rwc_curr_dict= {}
+
         # update dictionaries with deltas
         for i, layer in zip(range(len(prev_model_weights)), layer_names):
 
@@ -68,13 +70,15 @@ class RWC:
             layer_rwc_delta = self.calc_relative_weight_change(
                 prev_model_weights[i], curr_list[i])
 
+            rwc_curr_dict[layer] = layer_rwc_delta
+
             # update dictionaries.
             rwc_deltas[layer].append(layer_rwc_delta)
 
         # update previous.
         prev_list = curr_list.copy()
 
-        return rwc_deltas, prev_list
+        return rwc_deltas, prev_list, rwc_curr_dict
 
 
     def load_layers(self, model):

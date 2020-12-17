@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 from types import SimpleNamespace
 
@@ -24,10 +25,10 @@ def main(args, configs):
                             mode='max')
     trainer = Trainer(
             deterministic=True,
-            gpus=args.gpus,
+            gpus=configs.gpus,
             distributed_backend='dp',
             fast_dev_run=args.test_run,
-            logger=lightningLogger(args.experimentName),
+            logger=lightningLogger(configs.experimentName),
             callbacks=[early_stop_callback])
     
     trainer.fit(model)
@@ -38,11 +39,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Parser for RWC")
 
-    test_run = parser.add_argument('--test_run', action='store_true')
+    test_run = parser.add_argument('--test_run', default=1, type=int)
 
     args = parser.parse_args()
 
     # load configs
-    configs = SimpleNamespace(**json.load('./configs.json'))
+    configs = SimpleNamespace(**json.load(open('./configs.json')))
 
     main(args, configs)

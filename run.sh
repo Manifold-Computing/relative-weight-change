@@ -12,13 +12,13 @@
 export PYTHONPATH=$WORK/tf-gpu-pkgs
 module load singularity
 
-export NCCL_DEBUG=INFO
-export PYTHONFAULTHANDLER=1
+# export NCCL_DEBUG=INFO
+# export PYTHONFAULTHANDLER=1
 
-export NCCL_SOCKET_IFNAME=^docker0,lo
+# export NCCL_SOCKET_IFNAME=^docker0,lo
 # -------------------------
 
 # random port between 12k and 20k
 export MASTER_PORT=$((12000 + RANDOM % 20000))
 
-singularity exec docker://lordvoldemort28/pytorch-opencv:dev python -u $@ --gpus=2 --nodes=1                                                                     
+singularity exec docker://lordvoldemort28/pytorch-opencv:dev python -u $@ --test_run=5                                                                 

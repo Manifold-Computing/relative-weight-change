@@ -37,18 +37,21 @@ class CIFARModel(pl.LightningModule):
         return {'loss': loss}
         # pbar =   {'Train_accuracy': acc}
 
-    def training_step_end(self, batch_part_outputs):
+    def training_epoch_end(self, training_step_outputs):
         # print("Training step done! Entering the end function")
-        self.rwc_delta_dict, self.prev_weights = self.rwc.compute_delta(self.prev_weights, self.rwc_delta_dict)
+        self.rwc_delta_dict, self.prev_weights, rwc_curr_dict = self.rwc.compute_delta(self.model, self.prev_weights, self.rwc_delta_dict)
+        
+        for layer, value in rwc_curr_dict.items():
+            self.logger.experiment.log_metrics(layer, value, epoch=self.current_epoch)
 
         return {'loss': loss}
 
-    def on_train_end(self, trainer, pl_module):
-        for layer, values in self.rwc_delta_dict.items():
-            count = 0
-            for value in values:
-                count += 1
-                self.logger.experiment.log_metrics(layer, value, epoch=count)
+    # def on_train_end(self, trainer, pl_module):
+    #     for layer, values in self.rwc_delta_dict.items():
+    #         count = 0
+    #         for value in values:
+    #             count += 1
+    #             self.logger.experiment.log_metrics(layer, value, epoch=count)
 
     def validation_step(self, batch, batch_nb):
         x, y = batch
