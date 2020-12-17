@@ -21,7 +21,7 @@ class CIFARModel(pl.LightningModule):
         self.data = data
         self.batch_size = batch_size
         self.rwc = RWC()
-        self.prev_weights, self.rwc_delta_dict = self.rwc.setup_delta_tracking()
+        self.prev_weights, self.rwc_delta_dict = self.rwc.setup_delta_tracking(self.model)
 
     def forward(self, x):
         return self.model(x)

@@ -27,7 +27,7 @@ class RWC:
         return relative.mean()
 
 
-    def setup_delta_tracking(model):
+    def setup_delta_tracking(self,model):
         """Function creates the initial dict to track relative weights and gets the random weights from the model
         Args:
             model (torch.Model): Torch model object
@@ -48,7 +48,7 @@ class RWC:
         return weights, layers_dict
 
 
-    def compute_delta(model, prev_model_weights, rwc_deltas):
+    def compute_delta(self, model, prev_model_weights, rwc_deltas):
         """Function calculates Relative Weight Change between two model weights
         Args:
             model (torch.Model): Torch model object
@@ -59,7 +59,7 @@ class RWC:
         """
 
         # load model layers.
-        curr_list, layer_names = load_layers(model)
+        curr_list, layer_names = self.load_layers(model)
 
         rwc_curr_dict= {}
 
