@@ -22,6 +22,9 @@ class CIFARModel(pl.LightningModule):
         self.batch_size = batch_size
         self.rwc = RWC()
         self.prev_weights, self.rwc_delta_dict = self.rwc.setup_delta_tracking(self.model)
+        print(f"Model: {self.model}")
+        print(f"\n\nPrev Weights: {self.prev_weights}")
+        print(f"\n\nDelta Dict: {self.rwc_delta_dict}")
 
     def forward(self, x):
         return self.model(x)
@@ -31,20 +34,21 @@ class CIFARModel(pl.LightningModule):
         logits = self(x)
         loss = F.cross_entropy(logits, y)
         acc = accuracy(logits, y)
-        self.log('train_loss', loss,  on_epoch=True, prog_bar=True, logger=True)
-        self.log('train_accuracy', acc,  on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss', loss,  on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_accuracy', acc,  on_step=False, n_epoch=True, prog_bar=True, logger=True)
 
         return {'loss': loss}
         # pbar =   {'Train_accuracy': acc}
 
     def training_epoch_end(self, training_step_outputs):
         # print("Training step done! Entering the end function")
+        print(f'\n\n\n {rwc_curr_dict} \n\n')
+        print(f'Training Step Outputs: {training_step_outputs}')
         self.rwc_delta_dict, self.prev_weights, rwc_curr_dict = self.rwc.compute_delta(self.model, self.prev_weights, self.rwc_delta_dict)
         
         for layer, value in rwc_curr_dict.items():
             self.logger.experiment.log_metrics(layer, value, epoch=self.current_epoch)
-        print(f'\n\n\n {rwc_curr_dict} \n\n')
-        print(f'Training Step Outputs: {training_step_outputs}')
+        
         return {'loss': loss}
 
     # def on_train_end(self, trainer, pl_module):
@@ -60,8 +64,8 @@ class CIFARModel(pl.LightningModule):
         loss = F.cross_entropy(logits, y)
         acc = accuracy(logits, y)
 
-        self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val_accuracy', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_accuracy', acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
         return loss
     
