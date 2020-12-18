@@ -22,9 +22,9 @@ class CIFARModel(pl.LightningModule):
         self.batch_size = batch_size
         self.rwc = RWC()
         self.prev_weights, self.rwc_delta_dict = self.rwc.setup_delta_tracking(self.model)
-        print(f"Model: {self.model}")
-        print(f"\n\nPrev Weights: {self.prev_weights}")
-        print(f"\n\nDelta Dict: {self.rwc_delta_dict}")
+        # print(f"Model: {self.model}")
+        # print(f"\n\nPrev Weights: {self.prev_weights}")
+        # print(f"\n\nDelta Dict: {self.rwc_delta_dict}")
 
     def forward(self, x):
         return self.model(x)
@@ -46,8 +46,8 @@ class CIFARModel(pl.LightningModule):
         print(f'Training Step Outputs: {training_step_outputs}')
         self.rwc_delta_dict, self.prev_weights, rwc_curr_dict = self.rwc.compute_delta(self.model, self.prev_weights, self.rwc_delta_dict)
         
-        for layer, value in rwc_curr_dict.items():
-            self.logger.experiment.log_metrics(layer, value, epoch=self.current_epoch)
+        # for layer, value in rwc_curr_dict.items():
+        #     self.logger.experiment.log_metrics(layer, value, epoch=self.current_epoch)
         
         return {'loss': loss}
 

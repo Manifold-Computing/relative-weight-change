@@ -26,9 +26,8 @@ def main(args, configs):
     trainer = Trainer(
             deterministic=True,
             gpus=configs.gpus,
-            distributed_backend='dp',
             fast_dev_run=args.test_run,
-            logger=lightningLogger(configs.experimentName),
+            # logger=lightningLogger(configs.experimentName),
             callbacks=[early_stop_callback])
     
     trainer.fit(model)
