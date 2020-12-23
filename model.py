@@ -33,14 +33,16 @@ class CIFARModel(pl.LightningModule):
         acc = accuracy(logits, y)
         self.log('train_loss', loss,  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_accuracy', acc,  on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        
+        return loss
 
     def training_epoch_end(self, training_step_outputs):
         self.rwc_delta_dict, self.prev_weights, rwc_curr_dict = self.rwc.compute_delta(self.model, self.prev_weights, self.rwc_delta_dict)
         
         for layer, value in rwc_curr_dict.items():
-            self.logger.experiment.log_metrics(layer, value, epoch=self.current_epoch)
-        
-        return {'loss': loss}
+            print(f'Layer: {layer} \tValue:{value}')
+            self.log(layer, value,  on_step=False, on_epoch=True, prog_bar=False, logger=True)
+
 
     # def on_train_end(self, trainer, pl_module):
     #     for layer, values in self.rwc_delta_dict.items():
