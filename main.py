@@ -18,7 +18,7 @@ def main(args, configs):
     model = CIFARModel()
 
     early_stop_callback = EarlyStopping(
-                            monitor='val_accuracy_epoch',
+                            monitor='val_accuracy',
                             min_delta=0.00,
                             patience=5,
                             verbose=False,
@@ -27,7 +27,7 @@ def main(args, configs):
             deterministic=True,
             gpus=configs.gpus,
             fast_dev_run=args.test_run,
-            # logger=lightningLogger(configs.experimentName),
+            logger=lightningLogger(configs.experimentName),
             callbacks=[early_stop_callback])
     
     trainer.fit(model)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Parser for RWC")
 
-    test_run = parser.add_argument('--test_run', default=1, type=int)
+    test_run = parser.add_argument('--test_run', default=0, type=int)
 
     args = parser.parse_args()
 

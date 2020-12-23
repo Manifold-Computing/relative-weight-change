@@ -1,5 +1,5 @@
 {
     "experimentName": "test_run_lightning",
-    "gpus": 0,
+    "gpus": 1,
     "numNodes": 1
 }
