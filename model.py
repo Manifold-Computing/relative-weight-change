@@ -35,8 +35,6 @@ class CIFARModel(pl.LightningModule):
         self.log('train_accuracy', acc,  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
     def training_epoch_end(self, training_step_outputs):
-        print(f'\n\n\n {rwc_curr_dict} \n\n')
-        print(f'Training Step Outputs: {training_step_outputs}')
         self.rwc_delta_dict, self.prev_weights, rwc_curr_dict = self.rwc.compute_delta(self.model, self.prev_weights, self.rwc_delta_dict)
         
         for layer, value in rwc_curr_dict.items():
