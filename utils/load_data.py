@@ -1,3 +1,4 @@
+from torch.utils.data.dataloader import DataLoader
 from torchvision.datasets import CIFAR10, CIFAR100, MNIST, FashionMNIST
 
 from utils.transforms import train_transforms, val_transforms

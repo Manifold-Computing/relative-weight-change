@@ -1,11 +1,11 @@
 {
     "experimentName": "test_run_lightning",
-    "gpus": 0,
+    "gpus": 2,
     "numNodes": 1,
     "out_channels": 10,
-    "data": "CIFAR10",
+    "data": "FMNIST",
     "model_name": "resnet50",
-    "batch_size": 32,
+    "batch_size": 128,
     "lr": 0.02,
     "num_workers": 40
 }
