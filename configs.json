@@ -1,5 +1,11 @@
 {
     "experimentName": "test_run_lightning",
     "gpus": 0,
-    "numNodes": 1
+    "numNodes": 1,
+    "out_channels": 10,
+    "data": "CIFAR10",
+    "model_name": "resnet50",
+    "batch_size": 32,
+    "lr": 0.02,
+    "num_workers": 40
 }
