@@ -16,8 +16,7 @@ class RWCModel(pl.LightningModule):
 
     def __init__(self, configs):
         super(RWCModel, self).__init__()
-        self.model = model(name=configs.model_name, is_pretrained=False)
-        self.model.fc = nn.Linear(2048, configs.out_channels)
+        self.model = model(name=configs.model_name, data = configs.data, out_channels=configs.out_channels, is_pretrained=False)
         self.data = configs.data
         self.lr = configs.lr
         self.n_workers= configs.num_workers
