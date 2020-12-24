@@ -7,22 +7,24 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.trainer import seed_everything
 
-from logger import lightningLogger
-from model import CIFARModel
+from utils.logger import lightningLogger
+from utils.model import RWCModel
 
 
 def main(args, configs):
 
     seed_everything(42)
 
-    model = CIFARModel()
+    model = RWCModel(configs)
 
+    # early stop when validation accuracy stops increasing
     early_stop_callback = EarlyStopping(
                             monitor='val_accuracy',
                             min_delta=0.00,
                             patience=5,
                             verbose=False,
                             mode='max')
+    # lightning trainer 
     trainer = Trainer(
             deterministic=True,
             gpus=configs.gpus,
