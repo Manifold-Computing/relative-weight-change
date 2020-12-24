@@ -7,8 +7,8 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.trainer import seed_everything
 
+from model import RWCModel
 from utils.logger import lightningLogger
-from utils.model import RWCModel
 
 
 def main(args, configs):

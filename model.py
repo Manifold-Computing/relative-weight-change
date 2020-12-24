@@ -15,8 +15,8 @@ from utils.rwc import RWC
 class RWCModel(pl.LightningModule):
 
     def __init__(self, configs):
-        super(CIFARModel, self).__init__()
-        self.model = model(name=model_name, is_pretrained=False)
+        super(RWCModel, self).__init__()
+        self.model = model(name=configs.model_name, is_pretrained=False)
         self.model.fc = nn.Linear(2048, configs.out_channels)
         self.data = configs.data
         self.lr = configs.lr

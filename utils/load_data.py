@@ -3,7 +3,7 @@ from torchvision.datasets import CIFAR10, CIFAR100, MNIST, FashionMNIST
 from utils.transforms import train_transforms, val_transforms
 
 
-def train_dataset(name='CIFAR10', b_size=32, n_workers):
+def train_dataset(n_workers, name='CIFAR10', b_size=32):
     """ Function returns the train dataset used for training
 
     Args:
@@ -27,7 +27,7 @@ def train_dataset(name='CIFAR10', b_size=32, n_workers):
     return DataLoader(dataset, batch_size=b_size, num_workers=n_workers)
 
 
-def val_dataset(name='CIFAR10', b_size=32, n_workers):
+def val_dataset(n_workers,name='CIFAR10', b_size=32):
     """ Function returns the dataset used for validaton
 
     Args:
