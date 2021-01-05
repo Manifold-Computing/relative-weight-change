@@ -24,7 +24,7 @@ def main(args, configs):
                             patience=5,
                             verbose=False,
                             mode='max')
-    # lightning trainer 
+    # lightning trainer
     trainer = Trainer(
             deterministic=True,
             gpus=configs.gpus,

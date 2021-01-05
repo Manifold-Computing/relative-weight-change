@@ -56,7 +56,10 @@ class RWCModel(pl.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.lr)
+        optimizer =  optim.SGD(net.parameters(), lr=self.lr,
+                      momentum=0.9, weight_decay=5e-4)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+        return optimizer, scheduler
 
     def train_dataloader(self):
         return train_dataset(name=self.data, b_size=self.batch_size, n_workers=self.n_workers)

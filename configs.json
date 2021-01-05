@@ -3,9 +3,9 @@
     "gpus": 2,
     "numNodes": 1,
     "out_channels": 10,
-    "data": "FMNIST",
+    "data": "CIFAR10",
     "model_name": "resnet50",
     "batch_size": 128,
-    "lr": 0.02,
+    "lr": 0.01,
     "num_workers": 40
 }
