@@ -13,25 +13,27 @@ from utils.logger import lightningLogger
 
 def main(args, configs):
 
-    seed_everything(42)
+    seed_everything(configs.curr_seed)
 
     model = RWCModel(configs)
 
     # early stop when validation accuracy stops increasing
-    early_stop_callback = EarlyStopping(
-                            monitor='val_accuracy',
-                            min_delta=0.00,
-                            patience=5,
-                            verbose=False,
-                            mode='max')
+    # early_stop_callback = EarlyStopping(
+    #                         monitor='val_accuracy',
+    #                         min_delta=0.00,
+    #                         patience=5,
+    #                         verbose=False,
+    #                         mode='max')
     # lightning trainer
     trainer = Trainer(
             deterministic=True,
             gpus=configs.gpus,
             accelerator='dp',
             fast_dev_run=args.test_run,
-            logger=lightningLogger(configs.experimentName),
-            callbacks=[early_stop_callback])
+            logger=lightningLogger(configs),
+            default_root_dir=configs.root_dir
+            # callbacks=[early_stop_callback]
+            )
     
     trainer.fit(model)
 
@@ -48,4 +50,7 @@ if __name__ == "__main__":
     # load configs
     configs = SimpleNamespace(**json.load(open('./configs.json')))
 
-    main(args, configs)
+    # for multiple runs with different random weights
+    for seed in configs.seed:
+        configs.curr_seed = seed
+        main(args, configs)

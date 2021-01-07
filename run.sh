@@ -6,8 +6,8 @@
 #SBATCH --ntasks-per-node=2
 #SBATCH --gres=gpu:2
 #SBATCH --constraint='gpu_32gb&gpu_v100'
-#SBATCH --job-name=fmnist-rwc
-#SBATCH --output=/work/netthinker/ayush/out/fmnist-rwc.out
+#SBATCH --job-name=cifar-rwc
+#SBATCH --output=/work/netthinker/ayush/out/cifar10-rwc.out
 
 export PYTHONPATH=$WORK/tf-gpu-pkgs
 module load singularity

@@ -25,7 +25,7 @@ def train_dataset(n_workers, name='CIFAR10', b_size=32):
     elif name == "FMNIST":
         dataset = FashionMNIST("../", train=True, download=True, transform=train_trasforms())
 
-    return DataLoader(dataset, batch_size=b_size, num_workers=n_workers)
+    return DataLoader(dataset, batch_size=b_size, num_workers=n_workers, shuffle=True, pin_memory=True)
 
 
 def val_dataset(n_workers,name='CIFAR10', b_size=32):
@@ -49,4 +49,4 @@ def val_dataset(n_workers,name='CIFAR10', b_size=32):
     elif name == "FMNIST":
         dataset = FashionMNIST("../", train=False, download=True, transform=val_transforms())
 
-    return DataLoader(dataset, batch_size=b_size, num_workers=n_workers)
+    return DataLoader(dataset, batch_size=b_size, num_workers=n_workers, pin_memory=True)

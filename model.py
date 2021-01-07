@@ -1,5 +1,7 @@
+import numpy as np
 import pytorch_lightning as pl
 import torch
+import torch.optim as optim
 from pytorch_lightning.metrics.functional import accuracy
 from torch import nn
 from torch.nn import functional as F
@@ -19,6 +21,8 @@ class RWCModel(pl.LightningModule):
         self.model = model(name=configs.model_name, data = configs.data, out_channels=configs.out_channels, is_pretrained=False)
         self.data = configs.data
         self.lr = configs.lr
+        self.momentum = configs.momentum
+        self.weight_decay = configs.weight_decay
         self.n_workers= configs.num_workers
         self.batch_size = configs.batch_size
         self.rwc = RWC()
@@ -44,6 +48,13 @@ class RWCModel(pl.LightningModule):
         for layer, value in rwc_curr_dict.items():
             self.log(layer, value,  on_step=False, on_epoch=True, prog_bar=False, logger=True)
 
+    def on_train_end(self, trainer, pl_module):
+        print(f"Trainer: {trainer}")
+        print(f"PL_Module": {pl_module}")
+        print(f"\n\n Saving RWC Delta Dict at {configs.root_dir}/{configs.experiment_name}/{configs.curr_seed}.npy...")
+        np.save(f"{configs.root_dir}/{configs.experiment_name}/{configs.curr_seed}.npy", self.rwc_delta_dict)
+        print("Done Saving!")
+
     def validation_step(self, batch, batch_nb):
         x, y = batch
         logits = self(x)
@@ -57,8 +68,9 @@ class RWCModel(pl.LightningModule):
     
     def configure_optimizers(self):
         optimizer =  optim.SGD(net.parameters(), lr=self.lr,
-                      momentum=0.9, weight_decay=5e-4)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+                      momentum=self.momentum, weight_decay=self.weight_decay)
+        scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 150])
+
         return optimizer, scheduler
 
     def train_dataloader(self):

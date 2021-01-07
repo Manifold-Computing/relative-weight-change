@@ -1,11 +1,16 @@
 {
-    "experimentName": "test_run_lightning",
+    "project_name": "test_run_lightning",
+    "experiment_name": "resnet50-cifar10",
     "gpus": 2,
     "numNodes": 1,
     "out_channels": 10,
     "data": "CIFAR10",
-    "model_name": "resnet50",
+    "model_name": "resnet56",
+    "momentum": 0.9,
+    "weight_decay": 0.0001,
     "batch_size": 128,
-    "lr": 0.01,
-    "num_workers": 40
+    "lr": 0.1,
+    "num_workers": 40,
+    "root_dir": "/work/netthinker/ayush/MC/rwc_checkpoints",
+    "seed": [42]
 }
