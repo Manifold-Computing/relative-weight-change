@@ -1,7 +1,12 @@
+""" Module loads the appropriate dataset for training
+
+Returns:
+    Dataloader: Torch Dataloader with the respective datasets
+"""
 from torch.utils.data.dataloader import DataLoader
 from torchvision.datasets import CIFAR10, CIFAR100, MNIST, FashionMNIST
 
-from utils.transforms import train_transforms, val_transforms
+from transforms import train_transforms, val_transforms
 
 
 def train_dataset(n_workers, name='CIFAR10', b_size=32):
@@ -21,11 +26,14 @@ def train_dataset(n_workers, name='CIFAR10', b_size=32):
     elif name == "CIFAR100":
         dataset = CIFAR100("../", train=True, download=True, transform=train_transforms())
     elif name == "MNIST":
-        dataset = MNIST("../", train=True, download=True, transform=train_trasforms())
+        dataset = MNIST("../", train=True, download=True, transform=train_transforms())
     elif name == "FMNIST":
-        dataset = FashionMNIST("../", train=True, download=True, transform=train_trasforms())
+        dataset = FashionMNIST("../", train=True, download=True, transform=train_transforms())
 
-    return DataLoader(dataset, batch_size=b_size, num_workers=n_workers, shuffle=True, pin_memory=True)
+    loader = DataLoader(dataset, batch_size=b_size, num_workers=n_workers, 
+                shuffle=True, pin_memory=True)
+
+    return loader
 
 
 def val_dataset(n_workers,name='CIFAR10', b_size=32):

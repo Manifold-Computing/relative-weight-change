@@ -1,8 +1,14 @@
+"""Module defines a class and methods to calcuate the Relative
+Weight Change in each layer
+
+"""
 import numpy as np
 
 
 class RWC:
-
+    """ Class defined different methods required to calculate
+    the relative weight change
+    """
     def __init__(self):
         pass
 
@@ -28,7 +34,8 @@ class RWC:
 
 
     def setup_delta_tracking(self,model):
-        """Function creates the initial dict to track relative weights and gets the random weights from the model
+        """Function creates the initial dict to track relative 
+        weights and gets the random weights from the model
         Args:
             model (torch.Model): Torch model object
         Returns:
